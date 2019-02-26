@@ -2,6 +2,7 @@
 	<button type="button"> New Game </button>
 	<table>
 	<script language="JavaScript">
+	//Draw Game Board
 	var numRows = 7;
 	var numColumns = 7;
 		for(var rowCount = 0; rowCount < numRows; rowCount++)
@@ -14,7 +15,18 @@
 			document.write("</tr>");	
 		}
 		
-		
+	
 	</script>
 	</table>
+
+	<script>
+	//Draw Letter Table
+	var maxLetters = 6;
+	var table = document.getElementById("lettersTable");
+	var row = table.insertRow(0);
+	for(var letterCount = 0; letterCount < maxLetters; letterCount++)
+	{
+		row.insertCell(letterCount);
+	}
+	</script>
 </HTML>
