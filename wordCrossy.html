@@ -1,32 +1,75 @@
 <HTML>
 	<button type="button"> New Game </button>
-	<table>
+	<table id="gameBoard"> </table>
 	<script language="JavaScript">
-	//Draw Game Board
-	var numRows = 7;
-	var numColumns = 7;
-		for(var rowCount = 0; rowCount < numRows; rowCount++)
-		{
-			document.write("<tr>");
-			for(var columnCount = 0; columnCount < numColumns; columnCount++)
+	var words = [["purple", "pulp", "rue", "pure"],["banish", "bash","nab", "bias"]];
+	function drawGameBoard() {
+		//Draw Game Board
+		var numRows = 7;
+		var numColumns = 7;
+		var gameBoard = document.getElementById("gameBoard");
+			for(var rowCount = 0; rowCount < numRows; rowCount++)
 			{
-				document.write("<td> X </td>");
+				var row = gameBoard.insertRow(0);
+				for(var columnCount = 0; columnCount < numColumns; columnCount++)
+				{
+					var cell1 = row.insertCell(0);
+					cell1.innerHTML = "-"
+				}	
 			}
-			document.write("</tr>");	
-		}
-		
-	
+			
+	}
 	</script>
+
+	<table id="lettersTable">
 	</table>
 
 	<script>
+	function drawLetterTable() {
 	//Draw Letter Table
 	var maxLetters = 6;
 	var table = document.getElementById("lettersTable");
 	var row = table.insertRow(0);
+	var lettersArray = [];
 	for(var letterCount = 0; letterCount < maxLetters; letterCount++)
 	{
-		row.insertCell(letterCount);
+		var cell1 = row.insertCell(letterCount);
+		lettersArray = [...lettersArray, cell1];
 	}
+	setupLetters(lettersArray, words);
+	return lettersArray;
+	}
+	
+	function setupLetters(letterCells, words) {
+	var allLetters = words[0][0];
+	var sortedLetters = allLetters.split('').sort().join('');
+		for(var i = 0; i < letterCells.length; i++)
+		{
+			
+			letterCells[i].innerHTML = sortedLetters[i];
+		}
+	}
+	
 	</script>
+	<script>
+		function createGame() {
+			drawGameBoard();
+			var letters = drawLetterTable();
+		}
+	function shuffleLetters(lettersCells) {
+		var currentIndex = lettersCells.length, temporaryValue,randomIndex;
+		while(0 !== currentIndex) {
+			randomIndex = Math.floor(Math.random() * currentIndex);
+			currentIndex -=1;
+
+			temporaryValue = lettersCells[currentIndex];
+			lettersCells[currentIndex] = lettersCells[randomIndex];
+			lettersCells[randomIndex] = temporaryValue;
+		}
+	}
+
+	window.onload = createGame();
+	</script>
+<button type="button" onclick="shuffleLetters(drawLetterTable())"> Shuffle </button>
+
 </HTML>
