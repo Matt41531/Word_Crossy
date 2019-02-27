@@ -30,6 +30,7 @@
 	var maxLetters = 6;
 	var table = document.getElementById("lettersTable");
 	var row = table.insertRow(0);
+	row.id = "cells";
 	var lettersArray = [];
 	for(var letterCount = 0; letterCount < maxLetters; letterCount++)
 	{
@@ -56,7 +57,8 @@
 			drawGameBoard();
 			var letters = drawLetterTable();
 		}
-	function shuffleLetters(lettersCells) {
+	function shuffleLetters() {
+		lettersCells = document.getElementById("cells").cells;
 		var currentIndex = lettersCells.length, temporaryValue,randomIndex;
 		while(0 !== currentIndex) {
 			randomIndex = Math.floor(Math.random() * currentIndex);
@@ -70,6 +72,7 @@
 
 	window.onload = createGame();
 	</script>
-<button type="button" onclick="shuffleLetters(drawLetterTable())"> Shuffle </button>
+<button type="button" onclick="shuffleLetters()"> Shuffle </button>
+
 
 </HTML>
