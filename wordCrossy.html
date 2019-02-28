@@ -58,15 +58,17 @@
 			var letters = drawLetterTable();
 		}
 	function shuffleLetters() {
-		lettersCells = document.getElementById("cells").cells;
-		var currentIndex = lettersCells.length, temporaryValue,randomIndex;
+		var lettersCells = document.getElementById("cells").cells;
+		var currentIndex = lettersCells.length;
+		var temporaryValue;
+		var randomIndex;
 		while(0 !== currentIndex) {
 			randomIndex = Math.floor(Math.random() * currentIndex);
 			currentIndex -=1;
 
-			temporaryValue = lettersCells[currentIndex];
-			lettersCells[currentIndex] = lettersCells[randomIndex];
-			lettersCells[randomIndex] = temporaryValue;
+			temporaryValue = lettersCells[currentIndex].innerHTML;
+			lettersCells[currentIndex].innerHTML = lettersCells[randomIndex].innerHTML;
+			lettersCells[randomIndex].innerHTML = temporaryValue;
 		}
 	}
 
