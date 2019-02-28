@@ -42,7 +42,8 @@
 	}
 	
 	function setupLetters(letterCells, words) {
-	var allLetters = words[0][0];
+	var gameValue = Math.floor(Math.random() * words.length);
+	var allLetters = words[gameValue][0];
 	var sortedLetters = allLetters.split('').sort().join('');
 		for(var i = 0; i < letterCells.length; i++)
 		{
