@@ -18,7 +18,8 @@
 		var numRows = 7;
 		var numColumns = 7;
 		var gameBoard = document.getElementById("gameBoard");
-		for(var rowCount = 1; rowCount < numRows + 1; rowCount++)
+		var locationsMatrix = locations[0][0].split('');
+		for(var rowCount = numRows; rowCount > 0; rowCount--)
 			{
 				var row = gameBoard.insertRow(0);
 				for(var columnCount = numColumns; columnCount > 0; columnCount--)
@@ -26,10 +27,14 @@
 					var cell1 = row.insertCell(0);
 					cell1.innerHTML = (columnCount.toString()) + "," + (rowCount.toString());
 					cell1.coords = [columnCount, rowCount];
-					cell1.totalIndex = columnCount * (rowCount -1) * numRows;
-					if(locations[0][0][cell1.totalIndex] === "X")
+					cell1.totalIndex = columnCount + (rowCount -1) * numRows;
+					//Check the locations matrix and see if there is an "X" in the same postion. Subtract 1 from the total index because the location array starts at index 0 but coords start at 1
+					if(locationsMatrix[cell1.totalIndex - 1] === "X")
 					{
-						cell1.innerHTML = "X";
+						cell1.innerHTML = "";
+					}
+					else {
+						cell1.style.backgroundColor = "#000000";	
 					}
 				}	
 			}
