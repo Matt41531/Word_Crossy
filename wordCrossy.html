@@ -1,20 +1,36 @@
 <HTML>
-	<button type="button"> New Game </button>
+	<button type="button" onclick="createGame()"> New Game </button>
+	<style>	
+	table {
+		border: 2px solid black;
+	}
+	th, td {
+		padding: 15px;
+		border: 2px solid black;
+	}
+	</style>
 	<table id="gameBoard"> </table>
 	<script language="JavaScript">
 	var words = [["purple", "pulp", "rue", "pure"],["banish", "bash","nab", "bias"]];
+	var locations = [["xxxxXxxxxxxXxxxxxxXxxxXXXXXXxXxXxxxxXxXxxxxXxxxxx","2,4,a", "5,1,d", "4,4,d", "2,4,d"], ["xxxXxxxxxXXXXxXxxXxxxXxxXxxxXXXXxxxxxxXxxxxxxxxxx", "4,1,d", "3,2,a", "1,3,d", "1,5,a"]];
 	function drawGameBoard() {
 		//Draw Game Board
 		var numRows = 7;
 		var numColumns = 7;
 		var gameBoard = document.getElementById("gameBoard");
-			for(var rowCount = 0; rowCount < numRows; rowCount++)
+		for(var rowCount = 1; rowCount < numRows + 1; rowCount++)
 			{
 				var row = gameBoard.insertRow(0);
-				for(var columnCount = 0; columnCount < numColumns; columnCount++)
+				for(var columnCount = numColumns; columnCount > 0; columnCount--)
 				{
 					var cell1 = row.insertCell(0);
-					cell1.innerHTML = "-"
+					cell1.innerHTML = (columnCount.toString()) + "," + (rowCount.toString());
+					cell1.coords = [columnCount, rowCount];
+					cell1.totalIndex = columnCount * (rowCount -1) * numRows;
+					if(locations[0][0][cell1.totalIndex] === "X")
+					{
+						cell1.innerHTML = "X";
+					}
 				}	
 			}
 			
