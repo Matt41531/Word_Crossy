@@ -9,6 +9,8 @@
 		border: 2px solid black;
 	}
 	</style>
+	<input type="hidden" id="gameValue" value="function(){ return Math.floor(Math.random() * words.length);}"/>
+
 	<table id="gameBoard"> </table>
 	<script language="JavaScript">
 	var words = [["purple", "pulp", "rue", "pure"],["banish", "bash","nab", "bias"]];
@@ -122,9 +124,26 @@
 		}
 	}
 
+	function tryPlace() {
+		var gameValue = document.getElementById("gameValue").value;
+		var paletteCells = document.getElementById("palette").rows[0].cells;
+		var attemptedWord = '';
+		for(var i=0; i < paletteCells.length; i++){
+			attemptedWord += paletteCells[i].innerHTML;
+		}
+		if(words[gameValue].includes(attemptedWord)) {
+			//Place word
+			alert("Correct");
+		}
+		else {
+			alert("Incorrect!");
+		}
+	}
+
 	window.onload = createGame();
 	</script>
 	<button type="button" onclick="shuffleLetters()"> Shuffle </button>
-
+	<button type="button" onclick="tryPlace()"> Place </button>
+	<button type="button" > Delete </button>
 
 </HTML>
