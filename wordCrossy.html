@@ -9,12 +9,18 @@
 		border: 2px solid black;
 	}
 	</style>
-	<input type="hidden" id="gameValue" value="function(){ return Math.floor(Math.random() * words.length);}"/>
 
 	<table id="gameBoard"> </table>
 	<script language="JavaScript">
 	var words = [["purple", "pulp", "rue", "pure"],["banish", "bash","nab", "bias"]];
 	var locations = [["xxxxXxxxxxxXxxxxxxXxxxXXXXXXxXxXxxxxXxXxxxxXxxxxx","2,4,a", "5,1,d", "4,4,d", "2,4,d"], ["xxxXxxxxxXXXXxXxxXxxxXxxXxxxXXXXxxxxxxXxxxxxxxxxx", "4,1,d", "3,2,a", "1,3,d", "1,5,a"]];
+	class gameState {
+		constructor() {
+			this.gameValue = 0;
+			this.words =[["purple", "pulp", "rue", "pure"],["banish", "bash","nab", "bias"]];
+			this.locations =[["xxxxXxxxxxxXxxxxxxXxxxXXXXXXxXxXxxxxXxXxxxxXxxxxx","2,4,a", "5,1,d", "4,4,d", "2,4,d"], ["xxxXxxxxxXXXXxXxxXxxxXxxXxxxXXXXxxxxxxXxxxxxxxxxx", "4,1,d", "3,2,a", "1,3,d", "1,5,a"]];
+		}
+	}
 	function drawGameBoard(gameValue) {
 		//Draw Game Board
 		var numRows = 7;
@@ -47,7 +53,9 @@
 	<table id="lettersTable"></table>
 
 	<table id="palette"></table>
-
+	<button type="button" onclick="shuffleLetters()"> Shuffle </button>
+	<button type="button" id="place"> Place </button>
+	<button type="button" > Delete </button>
 	<script>
 	function drawLetterTable() {
 		//Draw Letter Table
@@ -102,12 +110,16 @@
 	}
 	
 	function createGame() {
-		var gameValue = Math.floor(Math.random() * words.length);
-		drawGameBoard(gameValue);
+		var gameData = new gameState();
+		gameData.gameValue = Math.floor(Math.random() * words.length);
+		drawGameBoard(gameData.gameValue);
 		var letters = drawLetterTable();
-		setupLetters(letters, words, gameValue);
+		setupLetters(letters, gameData.words, gameData.gameValue);
 		drawGuessingPalette();
-	}
+		var placeButton = document.getElementById("place");
+		placeButton.gameValue = gameData.gameValue;
+		placeButton.onclick = tryPlace;
+		}
 
 	function shuffleLetters() {
 		var lettersCells = document.getElementById("cells").cells;
@@ -125,13 +137,12 @@
 	}
 
 	function tryPlace() {
-		var gameValue = document.getElementById("gameValue").value;
 		var paletteCells = document.getElementById("palette").rows[0].cells;
 		var attemptedWord = '';
 		for(var i=0; i < paletteCells.length; i++){
 			attemptedWord += paletteCells[i].innerHTML;
 		}
-		if(words[gameValue].includes(attemptedWord)) {
+		if(words[this.gameValue].includes(attemptedWord)) {
 			//Place word
 			alert("Correct");
 		}
@@ -142,8 +153,6 @@
 
 	window.onload = createGame();
 	</script>
-	<button type="button" onclick="shuffleLetters()"> Shuffle </button>
-	<button type="button" onclick="tryPlace()"> Place </button>
-	<button type="button" > Delete </button>
+
 
 </HTML>
