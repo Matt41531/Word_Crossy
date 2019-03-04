@@ -1,5 +1,5 @@
 <HTML>
-	<button type="button" onclick="createGame()"> New Game </button>
+	<button type="button" onclick="newGame()"> New Game </button>
 	<style>	
 	table {
 		border: 2px solid black;
@@ -24,6 +24,24 @@
 			this.maxLetters = 6;
 		}
 	}
+
+	function newGame() {
+		var paletteCells = document.getElementById("palette").rows[0].cells;
+		var letters = document.getElementById("lettersTable").rows[0].cells;
+		var allLetters = "";
+		for(var i=0; i<paletteCells.length; i++) {
+			paletteCells[i].innerHTML = "";
+		}
+		//Gather all letters
+		for(var allLetterCount =0; allLetterCount<letters.length; allLetterCount++) {
+			allLetters += letters[i].innerHTML;
+		}
+		var sortedLetters = allLetters.split('').sort();
+		for(var letterCount = 0; letterCount<letters.length; letterCount++) {
+			letters[i].innerHTML = sortedLetters[i];
+		}
+	}
+
 	function drawGameBoard(gameState) {
 		//Draw Game Board
 		var gameBoard = document.getElementById("gameBoard");
