@@ -1,0 +1,11 @@
+Matthew Rife
+References:
+I used Fisher-Yates Shuffle Algorithm to shuffle the letters. I found a good example of it on stackOverflow.
+
+URL:
+www.cs.uky.edu/~mari242/Project2/wordCrossy.html
+
+1. It does not matter where this file is located, it runs whenever it is called by the browser. ??
+2. With a generic filename, anyone would be able to run your game and see the source code in a browser. 
+3. Players can view the source code and see the hardcoded correct words.
+4. Nothing would be interactable. The script CGI file runs once and stops. It gives a result and returns it. We needed something that allowed clickable events and high interactivity from the users.
