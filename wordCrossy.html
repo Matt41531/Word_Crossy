@@ -55,7 +55,7 @@
 	<table id="palette"></table>
 	<button type="button" onclick="shuffleLetters()"> Shuffle </button>
 	<button type="button" id="place"> Place </button>
-	<button type="button" > Delete </button>
+	<button type="button" id="delete"> Delete </button>
 	<script>
 	function drawLetterTable() {
 		//Draw Letter Table
@@ -82,11 +82,10 @@
 		}
 	}
 
-	function findFirstEmptyPaletteCell() {
-		var paletteCells = document.getElementById("palette").rows[0].cells;
+	function findFirstEmptyCell(cells) {
 		var count = 0;
 		var firstEmptyIndex;
-		while(paletteCells[count].innerHTML !== ""){
+		while(cells[count].innerHTML !== ""){
 			count++
 		}
 		firstEmptyIndex = count;
@@ -95,7 +94,7 @@
 
 	function cellOnClick() {
 		var paletteCells = document.getElementById("palette").rows[0].cells;
-		var firstEmptyIndex = findFirstEmptyPaletteCell()
+		var firstEmptyIndex = findFirstEmptyCell(paletteCells)
 		paletteCells[firstEmptyIndex].innerHTML = this.innerHTML;
 		this.innerHTML = "";
 	}
@@ -119,6 +118,8 @@
 		var placeButton = document.getElementById("place");
 		placeButton.gameValue = gameData.gameValue;
 		placeButton.onclick = tryPlace;
+		var deleteButton = document.getElementById("delete");
+		deleteButton.onclick = deleteLetter;
 		}
 
 	function shuffleLetters() {
@@ -149,6 +150,17 @@
 		else {
 			alert("Incorrect!");
 		}
+	}
+	function deleteLetter() {
+		var paletteCells = document.getElementById("palette").rows[0].cells;
+		var lettersCells = document.getElementById("lettersTable").rows[0].cells;
+		//remove most recent letter
+		var firstEmptyLettersIndex = findFirstEmptyCell(lettersCells);
+		var firstEmptyPaletteIndex = findFirstEmptyCell(paletteCells);
+		lettersCells[firstEmptyLettersIndex].innerHTML = paletteCells[firstEmptyPaletteIndex-1].innerHTML;
+		paletteCells[firstEmptyPaletteIndex-1].innerHTML = "";
+
+		//replace letter in original list
 	}
 
 	window.onload = createGame();
