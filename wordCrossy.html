@@ -19,23 +19,24 @@
 			this.gameValue = 0;
 			this.words =[["purple", "pulp", "rue", "pure"],["banish", "bash","nab", "bias"]];
 			this.locations =[["xxxxXxxxxxxXxxxxxxXxxxXXXXXXxXxXxxxxXxXxxxxXxxxxx","2,4,a", "5,1,d", "4,4,d", "2,4,d"], ["xxxXxxxxxXXXXxXxxXxxxXxxXxxxXXXXxxxxxxXxxxxxxxxxx", "4,1,d", "3,2,a", "1,3,d", "1,5,a"]];
+			this.numRows = 7;
+			this.numColumns = 7;
+			this.maxLetters = 6;
 		}
 	}
-	function drawGameBoard(gameValue) {
+	function drawGameBoard(gameState) {
 		//Draw Game Board
-		var numRows = 7;
-		var numColumns = 7;
 		var gameBoard = document.getElementById("gameBoard");
-		var locationsMatrix = locations[gameValue][0].split('');
-		for(var rowCount = numRows; rowCount > 0; rowCount--)
+		var locationsMatrix = locations[gameState.gameValue][0].split('');
+		for(var rowCount = gameState.numRows; rowCount > 0; rowCount--)
 			{
 				var row = gameBoard.insertRow(0);
-				for(var columnCount = numColumns; columnCount > 0; columnCount--)
+				for(var columnCount = gameState.numColumns; columnCount > 0; columnCount--)
 				{
 					var cell1 = row.insertCell(0);
 					cell1.innerHTML = (columnCount.toString()) + "," + (rowCount.toString());
 					cell1.coords = [columnCount, rowCount];
-					cell1.totalIndex = columnCount + (rowCount -1) * numRows;
+					cell1.totalIndex = columnCount + (rowCount -1) * gameState.numRows;
 					//Check the locations matrix and see if there is an "X" in the same postion. Subtract 1 from the total index because the location array starts at index 0 but coords start at 1
 					if(locationsMatrix[cell1.totalIndex - 1] === "X")
 					{
@@ -98,9 +99,9 @@
 		paletteCells[firstEmptyIndex].innerHTML = this.innerHTML;
 		this.innerHTML = "";
 	}
-	
 	function setupLetters(letterCells, words, gameValue) {
 		var allLetters = words[gameValue][0];
+		//Sort letters alphabetically for when tbe game starts
 		var sortedLetters = allLetters.split('').sort().join('');
 		for(var i = 0; i < letterCells.length; i++)
 		{		
@@ -111,7 +112,7 @@
 	function createGame() {
 		var gameData = new gameState();
 		gameData.gameValue = Math.floor(Math.random() * words.length);
-		drawGameBoard(gameData.gameValue);
+		drawGameBoard(gameData);
 		var letters = drawLetterTable();
 		setupLetters(letters, gameData.words, gameData.gameValue);
 		drawGuessingPalette();
@@ -127,6 +128,7 @@
 		var currentIndex = lettersCells.length;
 		var temporaryValue;
 		var randomIndex;
+		//Shuffle by swapping with a random index
 		while(0 !== currentIndex) {
 			randomIndex = Math.floor(Math.random() * currentIndex);
 			currentIndex -=1;
@@ -154,13 +156,14 @@
 	function deleteLetter() {
 		var paletteCells = document.getElementById("palette").rows[0].cells;
 		var lettersCells = document.getElementById("lettersTable").rows[0].cells;
-		//remove most recent letter
+		//Find the empty spaces in the letter box and guessing palette
 		var firstEmptyLettersIndex = findFirstEmptyCell(lettersCells);
 		var firstEmptyPaletteIndex = findFirstEmptyCell(paletteCells);
+		//Move the last letter from the palette to the letter box
 		lettersCells[firstEmptyLettersIndex].innerHTML = paletteCells[firstEmptyPaletteIndex-1].innerHTML;
+		//Delete the last letter from the palette
 		paletteCells[firstEmptyPaletteIndex-1].innerHTML = "";
 
-		//replace letter in original list
 	}
 
 	window.onload = createGame();
