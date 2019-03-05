@@ -138,6 +138,7 @@
 		placeButton.gameValue = gameData.gameValue;
 		placeButton.locations = gameData.locations;
 		placeButton.words = gameData.words;
+		placeButton.wordCount = 0;
 		placeButton.onclick = tryPlace;
 		var deleteButton = document.getElementById("delete");
 		deleteButton.onclick = deleteLetter;
@@ -178,12 +179,15 @@
 				
 				for(i=0;i<attemptedWord.length;i++) {
 					gameBoard.rows[rowIndex].cells[columnIndex + i].innerHTML = attemptedWord[i];
+					//clear one letter of the palette and put it back in letter box
 					deleteLetter();
 				}
 			}
 			else if(direction === 'd') {
 				for(i=0;i<attemptedWord.length;i++) {
 					gameBoard.rows[rowIndex + i].cells[columnIndex].innerHTML = attemptedWord[i];
+					//clear one letter of the palette and put it back in letter box
+					deleteLetter();
 				}
 			}
 
@@ -191,7 +195,10 @@
 				alert("Dev Error: Invalid direction. Use 'a' or 'd' " );
 				//Dev Error, incorrect location values
 			}
-
+			this.wordCount++
+			if(this.wordCount === this.words[this.gameValue].length) {
+				alert("game finished!");
+			}
 			alert("Correct");
 		}
 		else {
