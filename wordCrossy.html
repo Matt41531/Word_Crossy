@@ -72,7 +72,7 @@
 	<table id="lettersTable"></table>
 
 	<table id="palette"></table>
-	<button type="button" onclick="shuffleLetters()"> Shuffle </button>
+	<button type="button" id="shuffle" onclick="shuffleLetters()"> Shuffle </button>
 	<button type="button" id="place"> Place </button>
 	<button type="button" id="delete"> Delete </button>
 	<script>
@@ -139,6 +139,7 @@
 		placeButton.locations = gameData.locations;
 		placeButton.words = gameData.words;
 		placeButton.wordCount = 0;
+		placeButton.correctWords = [];
 		placeButton.onclick = tryPlace;
 		var deleteButton = document.getElementById("delete");
 		deleteButton.onclick = deleteLetter;
@@ -168,7 +169,7 @@
 			attemptedWord += paletteCells[i].innerHTML;
 		}
 
-		if(words[this.gameValue].includes(attemptedWord)) {
+		if((words[this.gameValue].includes(attemptedWord)) && !(this.correctWords.includes(attemptedWord))) {
 			//Place word
 			var wordChoice = this.words[this.gameValue].indexOf(attemptedWord);
 			var locationCoords = this.locations[this.gameValue][wordChoice + 1].split(',');
@@ -198,7 +199,11 @@
 			this.wordCount++
 			if(this.wordCount === this.words[this.gameValue].length) {
 				alert("game finished!");
+				this.disabled = true;
+				var deleteButton = document.getElementById("delete").disabled = true;
+				var shuffleButton = document.getElementById("shuffle").disabled = true;
 			}
+			this.correctWords.push(attemptedWord);
 			alert("Correct");
 		}
 		else {
