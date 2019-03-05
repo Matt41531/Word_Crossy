@@ -136,6 +136,8 @@
 		drawGuessingPalette();
 		var placeButton = document.getElementById("place");
 		placeButton.gameValue = gameData.gameValue;
+		placeButton.locations = gameData.locations;
+		placeButton.words = gameData.words;
 		placeButton.onclick = tryPlace;
 		var deleteButton = document.getElementById("delete");
 		deleteButton.onclick = deleteLetter;
@@ -159,13 +161,37 @@
 
 	function tryPlace() {
 		var paletteCells = document.getElementById("palette").rows[0].cells;
+		var gameBoard = document.getElementById("gameBoard");
 		var attemptedWord = '';
 		for(var i=0; i < paletteCells.length; i++){
 			attemptedWord += paletteCells[i].innerHTML;
 		}
+
 		if(words[this.gameValue].includes(attemptedWord)) {
 			//Place word
-			alert("Correct");
+			var wordChoice = this.words[this.gameValue].indexOf(attemptedWord);
+			var locationCoords = this.locations[this.gameValue][wordChoice + 1].split(',');
+			var rowIndex = locationCoords[1] -1;
+			var columnIndex = locationCoords[0] -1;
+			var direction = locationCoords[2];
+			if(direction === 'a') {
+				
+				for(i=0;i<attemptedWord.length;i++) {
+					gameBoard.rows[rowIndex].cells[columnIndex + i].innerHTML = attemptedWord[i];
+				}
+			}
+			else if(direction === 'd') {
+				for(i=0;i<attemptedWord.length;i++) {
+					gameBoard.rows[rowIndex + i].cells[columnIndex].innerHTML = attemptedWord[i];
+				}
+			}
+
+			else {
+				alert("Dev Error: Invalid direction. Use 'a' or 'd' " );
+				//Dev Error, incorrect location values
+			}
+
+					alert("Correct");
 		}
 		else {
 			alert("Incorrect!");
