@@ -178,6 +178,7 @@
 				
 				for(i=0;i<attemptedWord.length;i++) {
 					gameBoard.rows[rowIndex].cells[columnIndex + i].innerHTML = attemptedWord[i];
+					deleteLetter();
 				}
 			}
 			else if(direction === 'd') {
@@ -191,7 +192,7 @@
 				//Dev Error, incorrect location values
 			}
 
-					alert("Correct");
+			alert("Correct");
 		}
 		else {
 			alert("Incorrect!");
