@@ -1,5 +1,5 @@
 <HTML>
-	<button type="button" onclick="newGame()"> New Game </button>
+	<button type="button" id="newGameButton" onclick="newGame()"> New Game </button>
 	<style>	
 	table {
 		border: 2px solid black;
@@ -11,9 +11,14 @@
 	</style>
 
 	<table id="gameBoard"> </table>
+	<table id="lettersTable"></table>
+	<table id="palette"></table>
+	<button type="button" id="shuffle" onclick="shuffleLetters()"> Shuffle </button>
+	<button type="button" id="place"> Place </button>
+	<button type="button" id="delete"> Delete </button>	
+	
 	<script language="JavaScript">
-	var words = [["purple", "pulp", "rue", "pure"],["banish", "bash","nab", "bias"]];
-	var locations = [["xxxxXxxxxxxXxxxxxxXxxxXXXXXXxXxXxxxxXxXxxxxXxxxxx","2,4,a", "5,1,d", "4,4,d", "2,4,d"], ["xxxXxxxxxXXXXxXxxXxxxXxxXxxxXXXXxxxxxxXxxxxxxxxxx", "4,1,d", "3,2,a", "1,3,d", "1,5,a"]];
+
 	class gameState {
 		constructor() {
 			this.gameValue = 0;
@@ -25,9 +30,35 @@
 		}
 	}
 
+	//Create the inital game
+	function createGame() {
+		var gameData = new gameState();
+		gameData.gameValue = Math.floor(Math.random() * gameData.words.length);
+		drawGameBoard(gameData);
+		var letters = drawLetterTable();
+		setupLetters(letters, gameData.words, gameData.gameValue);
+		drawGuessingPalette();
+		var placeButton = document.getElementById("place");
+		placeButton.gameValue = gameData.gameValue;
+		placeButton.locations = gameData.locations;
+		placeButton.words = gameData.words;
+		placeButton.wordCount = 0;
+		placeButton.correctWords = [];
+		placeButton.onclick = tryPlace;
+		var deleteButton = document.getElementById("delete");
+		deleteButton.onclick = deleteLetter;
+	}
+
+	//Run the previous function when the page first loads
+	window.onload = createGame();
+
+	//When newGame is pressed, reset the game
 	function newGame() {
 		var paletteCells = document.getElementById("palette").rows[0].cells;
 		var letters = document.getElementById("lettersTable").rows[0].cells;
+		var deleteButton = document.getElementById("delete").disabled = false;
+		var shuffleButton = document.getElementById("shuffle").disabled = false;
+		var placeButton = document.getElementById("place").disabled = false;
 		var allLetters = "";
 		for(var i=0; i<paletteCells.length; i++) {
 			paletteCells[i].innerHTML = "";
@@ -41,16 +72,14 @@
 			letters[i].innerHTML = sortedLetters[i];
 		}
 	}
-
+	
+	//Draw the crossword gameboard with appropriate blanks
 	function drawGameBoard(gameState) {
-		//Draw Game Board
 		var gameBoard = document.getElementById("gameBoard");
-		var locationsMatrix = locations[gameState.gameValue][0].split('');
-		for(var rowCount = gameState.numRows; rowCount > 0; rowCount--)
-			{
+		var locationsMatrix = gameState.locations[gameState.gameValue][0].split('');
+		for(var rowCount = gameState.numRows; rowCount > 0; rowCount--){
 				var row = gameBoard.insertRow(0);
-				for(var columnCount = gameState.numColumns; columnCount > 0; columnCount--)
-				{
+				for(var columnCount = gameState.numColumns; columnCount > 0; columnCount--){
 					var cell1 = row.insertCell(0);
 					cell1.innerHTML = (columnCount.toString()) + "," + (rowCount.toString());
 					cell1.coords = [columnCount, rowCount];
@@ -64,18 +93,11 @@
 						cell1.style.backgroundColor = "#000000";	
 					}
 				}	
-			}
+		}	
 			
 	}
-	</script>
 
-	<table id="lettersTable"></table>
-
-	<table id="palette"></table>
-	<button type="button" id="shuffle" onclick="shuffleLetters()"> Shuffle </button>
-	<button type="button" id="place"> Place </button>
-	<button type="button" id="delete"> Delete </button>
-	<script>
+	//Draw the row with scrambled letters in it
 	function drawLetterTable() {
 		//Draw Letter Table
 		var maxLetters = 6;
@@ -92,15 +114,18 @@
 		return lettersArray;
 	}
 
+	//Draw the intially blank palette where guess go
 	function drawGuessingPalette() {
 		var paletteSize = 7;
 		var paletteTable = document.getElementById("palette");
 		var paletteRow = paletteTable.insertRow(0);
 		for(var i = 0; i < paletteSize; i++) {
+			
 			var paletteCell = paletteRow.insertCell(i);
 		}
 	}
 
+	//Find the first empty cell given an array of cells
 	function findFirstEmptyCell(cells) {
 		var count = 0;
 		var firstEmptyIndex;
@@ -111,15 +136,18 @@
 		return firstEmptyIndex;
 	}
 
+	//When a letter cell is clicked, it should move that letter to a palette cell and make the inital cell blank
 	function cellOnClick() {
 		var paletteCells = document.getElementById("palette").rows[0].cells;
 		var firstEmptyIndex = findFirstEmptyCell(paletteCells)
 		paletteCells[firstEmptyIndex].innerHTML = this.innerHTML;
 		this.innerHTML = "";
 	}
+
+	//Sort the letters for the first time the game starts
 	function setupLetters(letterCells, words, gameValue) {
 		var allLetters = words[gameValue][0];
-		//Sort letters alphabetically for when tbe game starts
+		//Sort letters alphabetically
 		var sortedLetters = allLetters.split('').sort().join('');
 		for(var i = 0; i < letterCells.length; i++)
 		{		
@@ -127,24 +155,7 @@
 		}
 	}
 	
-	function createGame() {
-		var gameData = new gameState();
-		gameData.gameValue = Math.floor(Math.random() * words.length);
-		drawGameBoard(gameData);
-		var letters = drawLetterTable();
-		setupLetters(letters, gameData.words, gameData.gameValue);
-		drawGuessingPalette();
-		var placeButton = document.getElementById("place");
-		placeButton.gameValue = gameData.gameValue;
-		placeButton.locations = gameData.locations;
-		placeButton.words = gameData.words;
-		placeButton.wordCount = 0;
-		placeButton.correctWords = [];
-		placeButton.onclick = tryPlace;
-		var deleteButton = document.getElementById("delete");
-		deleteButton.onclick = deleteLetter;
-		}
-
+	//On button press, shuffle the letters in the letter row. This works even after the user starts a guess
 	function shuffleLetters() {
 		var lettersCells = document.getElementById("cells").cells;
 		var currentIndex = lettersCells.length;
@@ -161,6 +172,7 @@
 		}
 	}
 
+	//On button press, check correctness of attempted word and if correct, place in appropriate box on board
 	function tryPlace() {
 		var paletteCells = document.getElementById("palette").rows[0].cells;
 		var gameBoard = document.getElementById("gameBoard");
@@ -168,9 +180,9 @@
 		for(var i=0; i < paletteCells.length; i++){
 			attemptedWord += paletteCells[i].innerHTML;
 		}
-
-		if((words[this.gameValue].includes(attemptedWord)) && !(this.correctWords.includes(attemptedWord))) {
-			//Place word
+		//Check if the attempted word is in the answer set for this game and han't already been guessed
+		if((this.words[this.gameValue].includes(attemptedWord)) && !(this.correctWords.includes(attemptedWord))) {
+			//Place word in board
 			var wordChoice = this.words[this.gameValue].indexOf(attemptedWord);
 			var locationCoords = this.locations[this.gameValue][wordChoice + 1].split(',');
 			var rowIndex = locationCoords[1] -1;
@@ -196,20 +208,24 @@
 				alert("Dev Error: Invalid direction. Use 'a' or 'd' " );
 				//Dev Error, incorrect location values
 			}
-			this.wordCount++
+			this.correctWords.push(attemptedWord);
+		       	this.wordCount++
 			if(this.wordCount === this.words[this.gameValue].length) {
-				alert("game finished!");
+				alert("Congratulations! You finished the game!");
 				this.disabled = true;
 				var deleteButton = document.getElementById("delete").disabled = true;
 				var shuffleButton = document.getElementById("shuffle").disabled = true;
 			}
-			this.correctWords.push(attemptedWord);
-			alert("Correct");
+		       	else {
+				alert("Correct");
+		       	}
 		}
 		else {
 			alert("Incorrect!");
 		}
 	}
+	
+	//On button press, delete the most recently placed letter in the guessing palette
 	function deleteLetter() {
 		var paletteCells = document.getElementById("palette").rows[0].cells;
 		var lettersCells = document.getElementById("lettersTable").rows[0].cells;
@@ -222,8 +238,6 @@
 		paletteCells[firstEmptyPaletteIndex-1].innerHTML = "";
 
 	}
-
-	window.onload = createGame();
 	</script>
 
 
