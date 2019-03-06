@@ -1,10 +1,26 @@
 Matthew Rife
 References:
 I used Fisher-Yates Shuffle Algorithm to shuffle the letters. I found a good example of it on stackOverflow.
+W3 Schools for syntax
 
 URL:
 www.cs.uky.edu/~mari242/Project2/wordCrossy.html
 
+Known Bugs/Errors:
+The new game button is only slightly functional. It correctly:
+-Removes all letters from palette
+-Places all letters in letter box
+-sorts letters alphabetically
+-Enables buttons again after finishing a game
+
+It draws a new board but it is sorta wonky. It's smaller (not sure why) and often has some boxes slightly out of position. 
+
+Instead of using new game button when testing, I have built the game so that it chooses a new game and redraws the board whenever the page is loaded. So once a game is finished, I suggest refreshing instead of new game. 
+
+Other notes:
+Players are allowed to shuffle when in the middle of placing a word. It shuffles the remaining letters and spaces around. (It's a feature, not a bug. I swear)
+
+Questions and Answers:
 1. It does not matter where this file is located, it runs whenever it is called by the browser. It does not run on a server.
 2. With a generic filename, anyone would be able to run your game and see the source code in a browser. 
 3. Players can view the source code and see the hardcoded correct words.

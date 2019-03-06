@@ -13,10 +13,12 @@
 	<table id="gameBoard"> </table>
 	<table id="lettersTable"></table>
 	<table id="palette"></table>
+	<body id="start">
+		^ Start Here
+	</body>
 	<button type="button" id="shuffle" onclick="shuffleLetters()"> Shuffle </button>
 	<button type="button" id="place"> Place </button>
 	<button type="button" id="delete"> Delete </button>	
-	
 	<script language="JavaScript">
 
 	class gameState {
@@ -27,6 +29,7 @@
 			this.numRows = 7;
 			this.numColumns = 7;
 			this.maxLetters = 6;
+			this.paletteSize = 7;
 		}
 	}
 
@@ -35,9 +38,9 @@
 		var gameData = new gameState();
 		gameData.gameValue = Math.floor(Math.random() * gameData.words.length);
 		drawGameBoard(gameData);
-		var letters = drawLetterTable();
+		var letters = drawLetterTable(gameData);
 		setupLetters(letters, gameData.words, gameData.gameValue);
-		drawGuessingPalette();
+		drawGuessingPalette(gameData);
 		var placeButton = document.getElementById("place");
 		//Pass gameState values to placeButton
 		placeButton.gameValue = gameData.gameValue;
@@ -83,15 +86,15 @@
 			letters[letterCount].innerHTML = sortedLetters[letterCount];
 		}
 		//Redraw board with new game
-		for(var rowCount = this.numRows -1; rowCount > 0; rowCount--){
-				for(var columnCount = this.numColumns -1; columnCount > 0; columnCount--){
+		for(var rowCount = 0; rowCount < this.numRows; rowCount++){
+				for(var columnCount = 0; columnCount < this.numColumns; columnCount++){
 					var cell1 = gameBoard.rows[rowCount].cells[columnCount];
 					cell1.innerHTML = "";
 					cell1.totalIndex = columnCount + (rowCount -1) * this.numRows;
 					//Check the locations matrix and see if there is an "X" in the same postion. Subtract 1 from the total index because the location array starts at index 0 but coords start at 1
 					if(this.locationsMatrix[cell1.totalIndex - 1] === "X")
 					{
-						cell1.innerHTML = "";
+						cell1.style.backgroundColor = "#ffffff";
 					}
 					else {
 						cell1.style.backgroundColor = "#000000";	
@@ -125,14 +128,13 @@
 	}
 
 	//Draw the row with scrambled letters in it
-	function drawLetterTable() {
+	function drawLetterTable(gameState) {
 		//Draw Letter Table
-		var maxLetters = 6;
 		var table = document.getElementById("lettersTable");
 		var row = table.insertRow(0);
 		row.id = "cells";
 		var lettersArray = [];
-		for(var letterCount = 0; letterCount < maxLetters; letterCount++)
+		for(var letterCount = 0; letterCount < gameState.maxLetters; letterCount++)
 		{
 			var cell1 = row.insertCell(letterCount);
 			cell1.onclick = cellOnClick;
@@ -142,11 +144,10 @@
 	}
 
 	//Draw the intially blank palette where guess go
-	function drawGuessingPalette() {
-		var paletteSize = 7;
+	function drawGuessingPalette(gameState) {
 		var paletteTable = document.getElementById("palette");
 		var paletteRow = paletteTable.insertRow(0);
-		for(var i = 0; i < paletteSize; i++) {
+		for(var i = 0; i < gameState.paletteSize; i++) {
 			
 			var paletteCell = paletteRow.insertCell(i);
 		}
@@ -168,7 +169,7 @@
 		var paletteCells = document.getElementById("palette").rows[0].cells;
 		var firstEmptyIndex = findFirstEmptyCell(paletteCells)
 		paletteCells[firstEmptyIndex].innerHTML = this.innerHTML;
-		this.innerHTML = "";
+		this.innerHTML = "";	
 	}
 
 	//Sort the letters for the first time the game starts
@@ -249,6 +250,11 @@
 				alert("Correct");
 		       	}
 		}
+		//Duplicate word
+		else if(this.correctWords.includes(attemptedWord)) {
+			alert("Duplicate word! Try again!");
+		}
+		//Incorrect word
 		else {
 			alert("Incorrect!");
 		}
