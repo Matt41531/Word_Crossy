@@ -1,5 +1,5 @@
 <HTML>
-	<button type="button" id="newGameButton" onclick="newGame()"> New Game </button>
+	<button type="button" id="newGameButton" > New Game </button>
 	<style>	
 	table {
 		border: 2px solid black;
@@ -39,12 +39,17 @@
 		setupLetters(letters, gameData.words, gameData.gameValue);
 		drawGuessingPalette();
 		var placeButton = document.getElementById("place");
+		//Pass gameState values to placeButton
 		placeButton.gameValue = gameData.gameValue;
 		placeButton.locations = gameData.locations;
 		placeButton.words = gameData.words;
 		placeButton.wordCount = 0;
 		placeButton.correctWords = [];
 		placeButton.onclick = tryPlace;
+		newGameButton.numRows = gameData.numRows;
+		newGameButton.numColumns = gameData.numColumns;
+		newGameButton.locationsMatrix = gameData.locations[gameData.gameValue][0].split('');
+		newGameButton.onclick = newGame;
 		var deleteButton = document.getElementById("delete");
 		deleteButton.onclick = deleteLetter;
 	}
@@ -78,13 +83,13 @@
 			letters[letterCount].innerHTML = sortedLetters[letterCount];
 		}
 		//Redraw board with new game
-		for(var rowCount = gameState.numRows; rowCount > 0; rowCount--){
-				for(var columnCount = gameState.numColumns; columnCount > 0; columnCount--){
+		for(var rowCount = this.numRows -1; rowCount > 0; rowCount--){
+				for(var columnCount = this.numColumns -1; columnCount > 0; columnCount--){
 					var cell1 = gameBoard.rows[rowCount].cells[columnCount];
 					cell1.innerHTML = "";
-					cell1.totalIndex = columnCount + (rowCount -1) * gameState.numRows;
+					cell1.totalIndex = columnCount + (rowCount -1) * this.numRows;
 					//Check the locations matrix and see if there is an "X" in the same postion. Subtract 1 from the total index because the location array starts at index 0 but coords start at 1
-					if(locationsMatrix[cell1.totalIndex - 1] === "X")
+					if(this.locationsMatrix[cell1.totalIndex - 1] === "X")
 					{
 						cell1.innerHTML = "";
 					}
