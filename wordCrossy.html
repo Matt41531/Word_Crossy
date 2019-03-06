@@ -56,20 +56,42 @@
 	function newGame() {
 		var paletteCells = document.getElementById("palette").rows[0].cells;
 		var letters = document.getElementById("lettersTable").rows[0].cells;
+		var gameBoard = document.getElementById("gameBoard");
 		var deleteButton = document.getElementById("delete").disabled = false;
 		var shuffleButton = document.getElementById("shuffle").disabled = false;
 		var placeButton = document.getElementById("place").disabled = false;
-		var allLetters = "";
+		var allLetters = [];
 		for(var i=0; i<paletteCells.length; i++) {
+			if(paletteCells[i].innerHTML !== "") {	
+				allLetters.push(paletteCells[i].innerHTML);
+			}
 			paletteCells[i].innerHTML = "";
 		}
 		//Gather all letters
 		for(var allLetterCount =0; allLetterCount<letters.length; allLetterCount++) {
-			allLetters += letters[i].innerHTML;
+			if(letters[allLetterCount].innerHTML !== "") {
+				allLetters.push(letters[allLetterCount].innerHTML);
+			}
 		}
-		var sortedLetters = allLetters.split('').sort();
+		var sortedLetters = allLetters.sort();
 		for(var letterCount = 0; letterCount<letters.length; letterCount++) {
-			letters[i].innerHTML = sortedLetters[i];
+			letters[letterCount].innerHTML = sortedLetters[letterCount];
+		}
+		//Redraw board with new game
+		for(var rowCount = gameState.numRows; rowCount > 0; rowCount--){
+				for(var columnCount = gameState.numColumns; columnCount > 0; columnCount--){
+					var cell1 = gameBoard.rows[rowCount].cells[columnCount];
+					cell1.innerHTML = "";
+					cell1.totalIndex = columnCount + (rowCount -1) * gameState.numRows;
+					//Check the locations matrix and see if there is an "X" in the same postion. Subtract 1 from the total index because the location array starts at index 0 but coords start at 1
+					if(locationsMatrix[cell1.totalIndex - 1] === "X")
+					{
+						cell1.innerHTML = "";
+					}
+					else {
+						cell1.style.backgroundColor = "#000000";	
+					}
+				}	
 		}
 	}
 	
@@ -180,7 +202,7 @@
 		for(var i=0; i < paletteCells.length; i++){
 			attemptedWord += paletteCells[i].innerHTML;
 		}
-		//Check if the attempted word is in the answer set for this game and han't already been guessed
+		//Check if the attempted word is in the answer set for this game and hasnt already been guessed
 		if((this.words[this.gameValue].includes(attemptedWord)) && !(this.correctWords.includes(attemptedWord))) {
 			//Place word in board
 			var wordChoice = this.words[this.gameValue].indexOf(attemptedWord);
@@ -188,6 +210,7 @@
 			var rowIndex = locationCoords[1] -1;
 			var columnIndex = locationCoords[0] -1;
 			var direction = locationCoords[2];
+	 		//If the direction is across, then the letters should start at the starting index and the columnIndex should be incremented
 			if(direction === 'a') {
 				
 				for(i=0;i<attemptedWord.length;i++) {
@@ -196,6 +219,7 @@
 					deleteLetter();
 				}
 			}
+	 		//If the direction is down, then the letters should start at the starting index and the rowIndex should be incremented
 			else if(direction === 'd') {
 				for(i=0;i<attemptedWord.length;i++) {
 					gameBoard.rows[rowIndex + i].cells[columnIndex].innerHTML = attemptedWord[i];
